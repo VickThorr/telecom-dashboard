@@ -2,12 +2,12 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# 1. Page Config (CHANGED layout="wide" to layout="centered" for better visual balance)
-st.set_page_config(page_title="AI Ticket Triage Dashboard", page_icon="🤖", layout="centered")
+# 1. Page Config
+st.set_page_config(page_title="AI Ticket Triage Dashboard", page_icon="🤖", layout="wide")
 st.title("🤖 Telecom Support AI Triage Center")
 st.markdown("Real-time ticket classification and human escalation metrics.")
 
-# 2. Data Point Asset
+# 2. Pointing to your exact file name committed on GitHub
 DATA_URL = "https://raw.githubusercontent.com/vickthorr/telecom-dashboard/main/triagetickettesting.csv"
 
 try:
@@ -42,9 +42,7 @@ try:
         if cat_col:
             cat_counts = df[cat_col[0]].value_counts().reset_index()
             cat_counts.columns = ['Category', 'Count']
-            # Tuned chart height to 300px so it isn't massive
-            fig_cat = px.bar(cat_counts, x='Category', y='Count', color='Category', template="plotly_dark", height=300)
-            fig_cat.update_layout(showlegend=False) # Hide redundant legend to save horizontal room
+            fig_cat = px.bar(cat_counts, x='Category', y='Count', color='Category', template="plotly_dark")
             st.plotly_chart(fig_cat, use_container_width=True)
 
     with right_chart_col:
@@ -53,15 +51,12 @@ try:
         if prio_col:
             priority_counts = df[prio_col[0]].value_counts().reset_index()
             priority_counts.columns = ['Priority', 'Count']
-            # Tuned chart height to 300px to match the bar chart
-            fig_prio = px.pie(priority_counts, values='Count', names='Priority', hole=0.4, template="plotly_dark", height=300)
+            fig_prio = px.pie(priority_counts, values='Count', names='Priority', hole=0.4, template="plotly_dark")
             st.plotly_chart(fig_prio, use_container_width=True)
 
     st.markdown("---")
-    
-    # 3. Enhanced Table Section (ADDED a massive height parameter for readable rows)
     st.subheader("📋 Live Triage Queue")
-    st.dataframe(df, use_container_width=True, height=500) 
+    st.dataframe(df, use_container_width=True)
 
 except Exception as e:
     st.error(f"Waiting for clean GitHub data sync... Details: {e}")
